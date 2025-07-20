@@ -1,7 +1,5 @@
 {% extends "base.html" %}
-
 {% block title %}Enviar PDF{% endblock %}
-
 {% block content %}
     <h1>Enviar PDF para Processamento</h1>
     
@@ -9,7 +7,7 @@
         <h3>1. Anexe o PDF do Fornecedor</h3>
         <input type="file" id="pdf-upload" name="pdf_file" accept=".pdf" required>
         <div id="mensagem" class="flash" style="display: none; margin-top:15px;"></div>
-        <input type="hidden" name="pdf_filename" id="pdf-filename">
+        <input type="hidden" name="storage_filename" id="storage-filename">
         
         <div id="dados-form" style="display:none;">
             <hr style="margin: 20px 0;">
@@ -23,13 +21,10 @@
                 <p id="codigo-fornecedor-display" style="background-color: #e9ecef; padding: 10px; border-radius: 4px; font-weight: bold;"></p>
             </div>
         </div>
-
         <button type="submit" id="btn-submit" disabled style="margin-top:20px;">Enviar e ir para Edição</button>
     </form>
     
-    <div style="text-align:center; margin-top:20px;">
-        <a href="{{ url_for('login') }}">Acessar Painel de Admin</a>
-    </div>
+    <div style="text-align:center; margin-top:20px;"><a href="{{ url_for('login') }}">Acessar Painel de Admin</a></div>
 
     <script>
         const pdfUpload = document.getElementById('pdf-upload');
@@ -37,7 +32,7 @@
         const codigoDisplay = document.getElementById('codigo-fornecedor-display');
         const btnSubmit = document.getElementById('btn-submit');
         const mensagemDiv = document.getElementById('mensagem');
-        const pdfFilenameInput = document.getElementById('pdf-filename');
+        const pdfFilenameInput = document.getElementById('storage-filename');
 
         pdfUpload.addEventListener('change', async function(event) {
             const file = event.target.files[0];
@@ -51,7 +46,7 @@
 
             const formData = new FormData();
             formData.append('pdf_file', file);
-
+            
             try {
                 const response = await fetch("{{ url_for('validar_pdf') }}", { method: 'POST', body: formData });
                 const data = await response.json();
@@ -61,7 +56,7 @@
                     mensagemDiv.className = 'flash';
                     dadosForm.style.display = 'block';
                     codigoDisplay.textContent = data.codigo_fornecedor;
-                    pdfFilenameInput.value = data.filename;
+                    pdfFilenameInput.value = data.storage_filename;
                     btnSubmit.disabled = false;
                 } else {
                     mensagemDiv.textContent = data.message;

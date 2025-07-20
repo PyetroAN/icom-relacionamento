@@ -8,3 +8,7 @@ uploads/
 # Outros
 .env
 venv/
+
+# Ignorar chaves de serviço
+/api/*.json
+api/firebase-service-account.json
