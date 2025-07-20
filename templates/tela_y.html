@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Painel de Admin{% endblock %}
+
+{% block content %}
+    <div class="header-actions">
+        <h1>Painel de Controle</h1>
+        <a href="{{ url_for('logout') }}">Sair (Logout)</a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <h2>Chamados Pendentes</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th><th>Hora Envio</th><th>Solicitante</th><th>Email</th>
+                    <th>Razão Social</th><th>Cód. Fornecedor</th><th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for chamado in pendentes %}
+                <tr>
+                    <td>#{{ chamado.id }}</td><td>{{ chamado.hora_envio }}</td><td>{{ chamado.nome_solicitante }}</td>
+                    <td>{{ chamado.email }}</td><td>{{ chamado.razao_social }}</td><td>{{ chamado.codigo_fornecedor_pdf }}</td>
+                    <td>
+                        <a href="{{ url_for('tela_editar', chamado_id=chamado.id) }}" class="button-link btn-editar">Editar</a>
+                        <a href="{{ url_for('download_excel', chamado_id=chamado.id) }}" class="button-link btn-download">Baixar</a>
+                        <a href="{{ url_for('concluir_chamado', chamado_id=chamado.id) }}" class="button-link btn-concluir" onclick="return confirm('Concluir este chamado?')">Concluir</a>
+                        <a href="{{ url_for('deletar_chamado', chamado_id=chamado.id) }}" class="button-link btn-deletar" onclick="return confirm('Atenção! Deseja deletar?')">Deletar</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="7">Nenhum chamado pendente.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h2>Chamados Concluídos</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th><th>Hora Conclusão</th><th>Solicitante</th><th>Email</th>
+                    <th>Razão Social</th><th>Cód. Fornecedor</th><th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for chamado in concluidos %}
+                <tr>
+                    <td>#{{ chamado.id }}</td><td>{{ chamado.hora_conclusao }}</td><td>{{ chamado.nome_solicitante }}</td>
+                    <td>{{ chamado.email }}</td><td>{{ chamado.razao_social }}</td><td>{{ chamado.codigo_fornecedor_pdf }}</td>
+                    <td><a href="{{ url_for('download_excel', chamado_id=chamado.id) }}" class="button-link btn-download">Baixar .XLSX</a></td>
+                </tr>
+            {% else %}
+                <tr><td colspan="7">Nenhum chamado concluído.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <a href="{{ url_for('tela_x') }}" class="button-link" style="width: auto;">+ Novo Envio</a>
+{% endblock %}

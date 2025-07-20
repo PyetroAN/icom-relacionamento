@@ -1,0 +1,10 @@
+# Python
+__pycache__/
+*.pyc
+
+# Uploads - Não vamos enviar os PDFs de teste
+uploads/
+
+# Outros
+.env
+venv/

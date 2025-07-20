@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Chamado #{{ chamado.id }}{% endblock %}
+
+{% block content %}
+    <h1>Revisão e Edição de Dados</h1>
+
+    <div style="background-color: #f8f9fa; border: 1px solid var(--cor-borda); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <p><strong>Solicitante:</strong> {{ chamado.nome_solicitante }} ({{ chamado.email }})</p>
+        <p><strong>Razão Social:</strong> {{ chamado.razao_social }} | <strong>Cód. Fornecedor:</strong> {{ chamado.codigo_fornecedor_pdf }}</p>
+    </div>
+
+    <form action="{{ url_for('salvar_chamado', chamado_id=chamado.id) }}" method="post">
+        <div class="table-wrapper">
+            <table id="tabela-produtos">
+                <thead>
+                    <tr>
+                        <th style="min-width: 150px;">Cód. Fornecedor</th>
+                        <th style="min-width: 300px;">Descrição do Produto</th>
+                        <th style="min-width: 150px;">Cód. Barras</th>
+                        <th style="min-width: 100px;">Qtd. Caixa</th>
+                        <th style="min-width: 100px;">Preço Atual</th>
+                        <th style="min-width: 80px;">Remover</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo-tabela">
+                    {% for produto in chamado.dados %}
+                    <tr>
+                        <td><input type="text" class="uppercase-input" name="codigo_fornecedor_{{ loop.index0 }}" value="{{ produto['Código Fornecedor'] }}" oninput="this.value = this.value.replace(/[^A-Za-z0-9]/g, '')" required></td>
+                        <td><input type="text" class="uppercase-input" name="descricao_{{ loop.index0 }}" value="{{ produto['Descrição dos Produtos'] }}" required></td>
+                        <td><input type="text" name="codigo_barras_{{ loop.index0 }}" value="{{ produto['Código Barras'] }}" readonly></td>
+                        <td><input type="text" name="quant_caixa_{{ loop.index0 }}" value="{{ produto['Atualizar Quant. caixa'] }}" oninput="this.value = this.value.replace(/[^0-9,]/g, '')" required></td>
+                        <td><input type="text" name="preco_atual_{{ loop.index0 }}" value="{{ produto['Preço Atual'] }}" oninput="this.value = this.value.replace(/[^0-9,]/g, '')" required></td>
+                        <td style="text-align: center;"><input type="checkbox" name="remover_{{ loop.index0 }}" onchange="toggleRemove(this)"></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="botoes-edicao">
+            <button id="btn-adicionar" type="button" onclick="adicionarNovaLinha()">Adicionar Linha</button>
+            <button id="btn-salvar" type="submit">Salvar e Enviar para Aprovação</button>
+        </div>
+    </form>
+
+    <!-- ========================================================== -->
+    <!-- ||||| O CÓDIGO JAVASCRIPT QUE FALTAVA ESTÁ AQUI ABAIXO ||||| -->
+    <!-- ========================================================== -->
+    <script>
+        let contadorDeLinhas = {{ chamado.dados|length }};
+
+        function toggleRemove(checkbox) {
+            const linha = checkbox.parentElement.parentElement;
+            // O comando 'toggle' adiciona a classe se não existir, e remove se existir. Perfeito para o checkbox.
+            linha.classList.toggle('marcado-para-remocao', checkbox.checked);
+        }
+
+        function adicionarNovaLinha() {
+            const tabela = document.getElementById('corpo-tabela');
+            const novaLinha = tabela.insertRow(); 
+
+            novaLinha.innerHTML = `
+                <td><input type="text" class="uppercase-input" name="codigo_fornecedor_${contadorDeLinhas}" oninput="this.value = this.value.replace(/[^A-Za-z0-9]/g, '')" required></td>
+                <td><input type="text" class="uppercase-input" name="descricao_${contadorDeLinhas}" required></td>
+                <td><input type="text" name="codigo_barras_${contadorDeLinhas}" readonly></td>
+                <td><input type="text" name="quant_caixa_${contadorDeLinhas}" oninput="this.value = this.value.replace(/[^0-9,]/g, '')" required></td>
+                <td><input type="text" name="preco_atual_${contadorDeLinhas}" oninput="this.value = this.value.replace(/[^0-9,]/g, '')" required></td>
+                <td style="text-align: center;"><input type="checkbox" name="remover_${contadorDeLinhas}" onchange="toggleRemove(this)"></td>
+            `;
+
+            contadorDeLinhas++; 
+        }
+    </script>
+{% endblock %}

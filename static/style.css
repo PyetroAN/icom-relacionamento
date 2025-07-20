@@ -1,0 +1,128 @@
+/* static/style.css */
+
+/* --- GERAL & FONTES --- */
+:root {
+    --cor-primaria: #0d6efd;
+    --cor-secundaria: #6c757d;
+    --cor-sucesso: #198754;
+    --cor-perigo: #dc3545;
+    --cor-aviso: #ffc107;
+    --cor-info: #0dcaf0;
+    --cor-fundo: #f8f9fa;
+    --cor-texto: #212529;
+    --cor-borda: #dee2e6;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    margin: 0;
+    padding: 1rem;
+}
+
+/* --- ESTRUTURA E CONTAINERS --- */
+/* MUDANÇA CRUCIAL AQUI: Container muito mais largo para usar o espaço da tela */
+.container {
+    max-width: 1400px; /* Usa mais espaço em telas grandes */
+    margin: 20px auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+h1, h2 {
+    color: var(--cor-texto);
+    border-bottom: 2px solid var(--cor-primaria);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* --- FORMULÁRIOS E BOTÕES --- */
+input[type="text"], input[type="email"], input[type="password"], input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    border: 1px solid var(--cor-borda);
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+input:focus { border-color: var(--cor-primaria); outline: none; }
+input[readonly] { background-color: #e9ecef; cursor: not-allowed; }
+
+/* MUDANÇA CRUCIAL AQUI: Botões agora têm largura automática */
+button, .button-link {
+    width: auto; /* Botões não ocupam 100% da largura por padrão */
+    padding: 10px 20px; /* Ajuste no padding */
+    background-color: var(--cor-primaria);
+    color: white !important; /* Importante para sobrepor o default de links */
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem; /* Tamanho mais proporcional */
+    cursor: pointer;
+    transition: background-color 0.2s, opacity 0.2s;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+button:hover, .button-link:hover { background-color: #0056b3; text-decoration: none; }
+button:disabled { background-color: #cccccc; cursor: not-allowed; }
+
+/* Botões de formulário principais que devem ocupar 100% da largura */
+form > button {
+    width: 100%;
+}
+
+
+/* --- TABELAS --- */
+.table-wrapper {
+    overflow-x: auto; /* Mantém a rolagem APENAS se a tela for muito pequena */
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%; /* A tabela agora ocupa o espaço disponível no container */
+    margin-top: 20px;
+}
+th, td {
+    border: 1px solid var(--cor-borda);
+    padding: 12px;
+    text-align: left;
+    white-space: nowrap; /* Impede que o texto quebre em várias linhas */
+}
+td input {
+    /* Reduz o padding para os inputs dentro da tabela */
+    padding: 8px;
+}
+
+
+/* --- MENSAGENS E ALERTAS --- */
+.flash { padding: 1rem; margin-bottom: 1rem; border-radius: 4px; border: 1px solid transparent; font-weight: bold; }
+.flash { background-color: #d4edda; color: #155724; border-color: #c3e6cb; }
+.flash.error { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; }
+
+/* Classes específicas */
+.uppercase-input { text-transform: uppercase; }
+.marcado-para-remocao { background-color: #f8d7da !important; text-decoration: line-through; opacity: 0.6; }
+
+/* Cores específicas dos botões */
+#btn-salvar, .btn-concluir { background-color: var(--cor-sucesso); }
+#btn-adicionar, #btn-submit { background-color: var(--cor-primaria); }
+.btn-download { background-color: var(--cor-info); }
+.btn-editar { background-color: var(--cor-aviso); }
+.btn-deletar { background-color: var(--cor-perigo); }
+
+.header-actions { display: flex; justify-content: space-between; align-items: center; }
+.botoes-edicao { margin-top: 20px; display: flex; gap: 10px; }
+
+
+/* RESPONSIVIDADE - AJUSTES FINOS */
+@media (max-width: 768px) {
+    body { padding: 0.5rem; }
+    .container { padding: 1rem; }
+    h1 { font-size: 1.5rem; }
+    th, td { padding: 8px; font-size: 0.9em; }
+    .header-actions { flex-direction: column; align-items: flex-start; gap: 10px; }
+}

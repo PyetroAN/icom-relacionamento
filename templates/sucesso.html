@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Sucesso!{% endblock %}
+
+{% block content %}
+    <div style="text-align:center;">
+        <h1 style="color:var(--cor-sucesso); border:none;">✔ Solicitação Enviada com Sucesso!</h1>
+        <p>Seus dados foram recebidos e estão na fila para processamento.</p>
+        <a href="{{ url_for('tela_x') }}" class="button-link" style="width:auto;">Voltar para a Tela Inicial</a>
+    </div>
+{% endblock %}

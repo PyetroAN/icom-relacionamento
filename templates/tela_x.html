@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Enviar PDF{% endblock %}
+
+{% block content %}
+    <h1>Enviar PDF para Processamento</h1>
+    
+    <form id="main-form" action="{{ url_for('enviar_para_edicao') }}" method="post">
+        <h3>1. Anexe o PDF do Fornecedor</h3>
+        <input type="file" id="pdf-upload" name="pdf_file" accept=".pdf" required>
+        <div id="mensagem" class="flash" style="display: none; margin-top:15px;"></div>
+        <input type="hidden" name="pdf_filename" id="pdf-filename">
+        
+        <div id="dados-form" style="display:none;">
+            <hr style="margin: 20px 0;">
+            <h3>2. Preencha seus dados</h3>
+            <input type="text" name="nome_solicitante" placeholder="Seu Nome Completo" required>
+            <input type="email" name="email" placeholder="Seu E-mail Corporativo" required>
+            <input type="text" name="razao_social" placeholder="Razão Social (Nome do Fornecedor)" required>
+            
+            <div id="codigo-fornecedor-bloco">
+                <strong>Código do Fornecedor (extraído do PDF):</strong>
+                <p id="codigo-fornecedor-display" style="background-color: #e9ecef; padding: 10px; border-radius: 4px; font-weight: bold;"></p>
+            </div>
+        </div>
+
+        <button type="submit" id="btn-submit" disabled style="margin-top:20px;">Enviar e ir para Edição</button>
+    </form>
+    
+    <div style="text-align:center; margin-top:20px;">
+        <a href="{{ url_for('login') }}">Acessar Painel de Admin</a>
+    </div>
+
+    <script>
+        const pdfUpload = document.getElementById('pdf-upload');
+        const dadosForm = document.getElementById('dados-form');
+        const codigoDisplay = document.getElementById('codigo-fornecedor-display');
+        const btnSubmit = document.getElementById('btn-submit');
+        const mensagemDiv = document.getElementById('mensagem');
+        const pdfFilenameInput = document.getElementById('pdf-filename');
+
+        pdfUpload.addEventListener('change', async function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            btnSubmit.disabled = true;
+            dadosForm.style.display = 'none';
+            mensagemDiv.textContent = 'Validando PDF, por favor aguarde...';
+            mensagemDiv.style.display = 'block';
+            mensagemDiv.className = 'flash';
+
+            const formData = new FormData();
+            formData.append('pdf_file', file);
+
+            try {
+                const response = await fetch("{{ url_for('validar_pdf') }}", { method: 'POST', body: formData });
+                const data = await response.json();
+
+                if (data.success) {
+                    mensagemDiv.textContent = 'PDF válido! Preencha os campos abaixo.';
+                    mensagemDiv.className = 'flash';
+                    dadosForm.style.display = 'block';
+                    codigoDisplay.textContent = data.codigo_fornecedor;
+                    pdfFilenameInput.value = data.filename;
+                    btnSubmit.disabled = false;
+                } else {
+                    mensagemDiv.textContent = data.message;
+                    mensagemDiv.className = 'flash error';
+                    pdfUpload.value = '';
+                }
+            } catch (error) {
+                mensagemDiv.textContent = 'Erro de comunicação com o servidor.';
+                mensagemDiv.className = 'flash error';
+            }
+        });
+    </script>
+{% endblock %}
